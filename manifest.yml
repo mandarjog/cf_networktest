@@ -1,0 +1,5 @@
+---
+applications:
+- name: network_access_tester
+  memory: 128M
+  buildpack: python_buildpack
