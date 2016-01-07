@@ -13,7 +13,7 @@ import sh
 
 
 app = Flask(__name__)
-port = os.getenv('VCAP_APP_PORT', '5000')
+port = os.getenv('VCAP_APP_PORT', os.getenv('PORT', '5000'))
 tempdir = os.getenv('TMPDIR', '/tmp')
 
 INFO_URL = "https://github.com/status.json"
@@ -98,5 +98,11 @@ def dig(host):
     return run_async(shCmd, "dig", host)
 
 
+@app.route('/')
+def health():
+    return "ok"
+
+
 if __name__ == "__main__":
+    print "Starting on port =", port
     app.run(host='0.0.0.0', port=int(port), debug=True)
