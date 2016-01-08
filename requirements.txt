@@ -2,4 +2,4 @@ Flask
 requests
 netifaces
 sh
-
+flask-autodoc

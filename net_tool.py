@@ -2,6 +2,7 @@ import requests
 import os
 import os.path
 from flask import Flask, request, redirect
+from flask.ext.autodoc import Autodoc
 import urllib
 import socket
 import time
@@ -13,6 +14,7 @@ import sh
 
 
 app = Flask(__name__)
+auto = Autodoc(app)
 port = os.getenv('VCAP_APP_PORT', os.getenv('PORT', '5000'))
 tempdir = os.getenv('TMPDIR', '/tmp')
 
@@ -73,7 +75,11 @@ def run_async(shCmd, cmdName, host):
 
 
 @app.route('/get/<url>')
+@auto.doc()
 def get(url):
+    """
+    attempt an HTTP GET request to the specified url
+    """
     if not url.startswith("http"):
         url = "http://" + url
 
@@ -82,25 +88,37 @@ def get(url):
 
 
 @app.route('/resolve/<host>')
+@auto.doc()
 def resolve(host):
+    """
+    resolve host using socket
+    """
     return socket.gethostbyname(host)
 
 
 @app.route('/traceroute/<host>')
+@auto.doc()
 def traceroute(host):
+    """
+    run platform traceroute in asynchronous mode
+    """
     from sh import traceroute as shCmd
     return run_async(shCmd, "traceroute", host)
 
 
 @app.route('/dig/<host>')
+@auto.doc()
 def dig(host):
+    """
+    run platform dig in asynchronous mode
+    """
     from sh import dig as shCmd
     return run_async(shCmd, "dig", host)
 
 
 @app.route('/')
 def health():
-    return "ok"
+    return auto.html()
 
 
 if __name__ == "__main__":
