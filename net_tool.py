@@ -36,13 +36,13 @@ def remove_params_and_redirect(params):
 NOCACHE = "_nocache"
 
 
-def run_async(shCmd, cmdName, host, **kwargs):
+def run_async(shCmd, host, **kwargs):
     """
     Run an sh command in async mode
     This takes care of _nocache flag and meta refresh
     so any command can be run this way
     """
-    hostfile = tempdir + '__{}__'.format(cmdName) + host
+    hostfile = tempdir + '__{}__'.format(shCmd._path.replace('/', '_')) + host
     pidfile = hostfile + ".pid"
     refresh = """<meta http-equiv="refresh" content="3">"""
     redo = """<a href="{}?{}=1"> Rerun </a>""".format(request.path, NOCACHE)
@@ -103,7 +103,7 @@ def traceroute(host):
     run platform traceroute in asynchronous mode
     """
     from sh import traceroute as shCmd
-    return run_async(shCmd, "traceroute", host)
+    return run_async(shCmd, host)
 
 
 @app.route('/ping/<host>')
@@ -113,7 +113,7 @@ def ping(host):
     run platform ping in asynchronous mode
     """
     from sh import ping as shCmd
-    return run_async(shCmd, "ping", host, c="10")
+    return run_async(shCmd, host, c="10")
 
 
 @app.route('/dig/<host>')
@@ -123,7 +123,7 @@ def dig(host):
     run platform dig in asynchronous mode
     """
     from sh import dig as shCmd
-    return run_async(shCmd, "dig", host)
+    return run_async(shCmd, host)
 
 
 @app.route('/')
