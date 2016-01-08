@@ -75,11 +75,15 @@ def run_async(shCmd, host, **kwargs):
 
 
 @app.route('/get/<url>')
+@app.route('/get')
 @auto.doc()
-def get(url):
+def get(url=None):
     """
     attempt an HTTP GET request to the specified url
     """
+    if not url:
+        url = request.args.get("url")
+
     if not url.startswith("http"):
         url = "http://" + url
 
